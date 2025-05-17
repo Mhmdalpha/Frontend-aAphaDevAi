@@ -1,7 +1,8 @@
 import { Link, Outlet } from "react-router-dom";
 import "./rootLayout.css";
-import { ClerkProvider, SignedIn, UserButton } from "@clerk/clerk-react";
+import { ClerkProvider, SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
 if (!PUBLISHABLE_KEY) {
@@ -24,6 +25,10 @@ const RootLayout = () => {
               <SignedIn>
                 <UserButton />
               </SignedIn>
+              <SignedOut>
+                <Link to="/sign-in">Sign In</Link>
+                <Link to="/sign-up">Sign Up</Link>
+              </SignedOut>
             </div>
           </header>
           <main>
