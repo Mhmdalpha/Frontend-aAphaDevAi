@@ -26,7 +26,7 @@ const ChatList = () => {
           ? "Something went wrong!"
           : data?.map((chat) => (
               <Link to={`/dashboard/chats/${chat._id}`} key={chat._id}>
-                {chat.title}
+                {chat.title || "Untitled Chat"}}
               </Link>
             ))}
       </div>
