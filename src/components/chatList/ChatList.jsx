@@ -7,7 +7,10 @@ const ChatList = () => {
     queryKey: ["userChats"],
     queryFn: () =>
       fetch(`${import.meta.env.VITE_API_URL}/api/userchats`, {
-        credentials: "include",
+        credentials: "include",  // Mengirimkan cookie dengan request
+        headers: {
+          'Cache-Control': 'no-cache',  // Menonaktifkan cache
+        }
       }).then((res) => res.json()),
   });
 
@@ -26,7 +29,7 @@ const ChatList = () => {
           ? "Something went wrong!"
           : data?.map((chat) => (
               <Link to={`/dashboard/chats/${chat._id}`} key={chat._id}>
-                {chat.title}
+                {chat.title || "Untitled Chat"}
               </Link>
             ))}
       </div>
