@@ -3,7 +3,7 @@ import "./chatList.css";
 import { useQuery } from "@tanstack/react-query";
 
 const ChatList = () => {
-  const { isLoading, isError, error, data } = useQuery({
+  const { isPending, error, data } = useQuery({
     queryKey: ["userChats"],
     queryFn: () =>
       fetch(`${import.meta.env.VITE_API_URL}/api/userchats`, {
@@ -14,14 +14,6 @@ const ChatList = () => {
       }).then((res) => res.json()),
   });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (isError) {
-    return <div>Something went wrong! {error.message}</div>;
-  }
-
   return (
     <div className="chatList">
       <span className="title">DASHBOARD</span>
@@ -31,11 +23,15 @@ const ChatList = () => {
       <hr />
       <span className="title">RECENT CHATS</span>
       <div className="list">
-        {data?.map((chat) => (
-          <Link to={`/dashboard/chats/${chat._id}`} key={chat._id}>
-            {chat.title || "Untitled Chat"}
-          </Link>
-        ))}
+        {isPending
+          ? "Loading..."
+          : error
+          ? "Something went wrong!"
+          : data?.map((chat) => (
+              <Link to={`/dashboard/chats/${chat._id}`} key={chat._id}>
+                {chat.title || "Untitled Chat"}
+              </Link>
+            ))}
       </div>
       <hr />
       <div className="upgrade">
@@ -50,3 +46,4 @@ const ChatList = () => {
 };
 
 export default ChatList;
+
