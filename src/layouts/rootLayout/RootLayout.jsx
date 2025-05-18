@@ -25,10 +25,6 @@ const RootLayout = () => {
               <SignedIn>
                 <UserButton />
               </SignedIn>
-              <SignedOut>
-                <Link to="/sign-in">Sign In</Link>
-                <Link to="/sign-up">Sign Up</Link>
-              </SignedOut>
             </div>
           </header>
           <main>
