@@ -8,7 +8,7 @@ const SignInPage = () => {
       <SignIn
         path="/sign-in"  // Path untuk halaman sign in
         signUpUrl="/sign-up"  // URL untuk halaman sign up
-        afterSignInUrl="/dashboard"  // Setelah berhasil sign in, redirect ke halaman dashboard
+        forceRedirectUrl="/dashboard"  // Setelah berhasil sign in, redirect ke halaman dashboard
       />
     </div>
   );
