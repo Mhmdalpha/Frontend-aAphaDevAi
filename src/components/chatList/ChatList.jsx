@@ -1,4 +1,4 @@
-jsx
+
 import { Link } from "react-router-dom";
 import "./chatList.css"; // Pastikan path ini benar
 import { useQuery } from "@tanstack/react-query";
@@ -6,41 +6,30 @@ import { useAuth } from "@clerk/clerk-react"; // Import useAuth
 
 const ChatList = () => {
   // Dapatkan status autentikasi dari Clerk
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, isLoaded } = useAuth();
 
-  // Gunakan useQuery untuk mengambil data, hanya jika pengguna telah masuk
-  const { isPending, error, data } = useQuery({
-    queryKey: ["userChats"], // Kunci unik untuk query ini
-    queryFn: () =>
-      // Fungsi untuk melakukan fetching data
-      fetch(`${import.meta.env.VITE_API_URL}/api/userchats`, {
-        credentials: "include", // Penting untuk mengirim cookies Clerk
-        headers: {
-          'Cache-Control': 'no-cache', // Menonaktifkan cache browser
+        const { isPending, error, data } = useQuery({
+          queryKey: ["userChats"],
+          queryFn: () =>
+            fetch(`${import.meta.env.VITE_API_URL}/api/userchats`, {
+              credentials: "include",
+              headers: {
+                'Cache-Control': 'no-cache',
+              }
+            }).then((res) => {
+              if (!res.ok) {
+                 throw new Error(`HTTP error! status: ${res.status}`);
+              }
+              return res.json();
+            }),
+          // Aktifkan query hanya jika Clerk selesai memuat DAN pengguna masuk
+          enabled: isLoaded && !!isSignedIn,
+        });
+
+        // Perbarui UI saat loading atau belum dimuat
+        if (!isLoaded) {
+            return <div>Loading authentication state...</div>;
         }
-      }).then((res) => {
-        // Periksa jika respons bukan OK (status 2xx)
-        if (!res.ok) {
-           // Lempar error jika status bukan OK (misalnya, 401 Unauthorized)
-           // Catatan: 302 ditangani otomatis oleh browser/fetch API,
-           // tetapi ini membantu menangani error non-302.
-           throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        // Parse respons sebagai JSON
-        return res.json();
-      }),
-    // Opsi 'enabled': Query hanya akan berjalan jika kondisi ini true
-    // !!isSignedIn mengubah nilai truthy/falsy menjadi boolean murni
-    enabled: !!isSignedIn,
-  });
-
-  // Fungsi helper untuk merender konten daftar obrolan
-  const renderChatListContent = () => {
-    // Tampilkan pesan jika pengguna belum masuk
-    if (!isSignedIn) {
-      return <p>Please sign in to see your recent chats.</p>;
-    }
-
     // Tampilkan pesan loading saat query sedang berjalan
     if (isPending) {
       return "Loading...";
